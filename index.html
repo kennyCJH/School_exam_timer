@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>校園考試倒數計時時鐘系統 | 支援自訂校名與校徽</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,600;0,800;1,800&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body class="theme-default">
+  <div class="app-container" id="appContainer">
+    <!-- 頂部資訊列 -->
+    <header class="top-bar">
+      <div class="school-brand">
+        <!-- 點擊即可直接更換校徽 -->
+        <div class="badge-icon-wrap" title="點擊直接更換校徽圖片">
+          <div class="badge-icon" id="schoolBadgeBtn">
+            <img src="school_logo.png" alt="學校校徽" class="school-logo-img" id="schoolLogoImg">
+            <div class="badge-hover-overlay">
+              <span>📷更換</span>
+            </div>
+          </div>
+          <input type="file" id="directLogoInput" accept="image/*" style="display: none;">
+        </div>
+        <div class="title-group">
+          <!-- 點擊直接修改學校名稱 -->
+          <div class="main-title-editable" id="schoolNameContainer" title="點擊直接自訂學校名稱">
+            <h1 class="main-title" id="schoolNameDisplay">嘉義市蘭潭國小</h1>
+            <span class="edit-hint-icon" title="點擊修改校名">✏️</span>
+          </div>
+          <!-- 可點擊自訂的學期考試標題區 -->
+          <div class="sub-title-editable" id="headerTitleContainer" title="點擊快速編輯學年、學期與考查名稱">
+            <span class="title-chip" id="titleYearDisplay">115</span>
+            <span>學年度</span>
+            <span class="title-chip" id="titleSemesterDisplay">上學期</span>
+            <span class="title-chip" id="titleExamTypeDisplay">第一次定期考查</span>
+            <span class="title-tail">考試倒數計時時鐘</span>
+            <span class="edit-hint-icon">✏️</span>
+          </div>
+        </div>
+      </div>
+      <div class="top-controls">
+        <div class="clock-display" title="現在標準時間">
+          <span class="clock-icon">🕒</span>
+          <span id="currentTime">--:--:--</span>
+        </div>
+        <button id="btnHelpGuide" class="btn-icon" title="檢視系統操作使用說明書">📖 使用說明</button>
+        <button id="btnDataManage" class="btn-icon" title="編輯考程、下載範例檔與上傳匯入">📅 考程管理</button>
+        <button id="btnSettings" class="btn-icon" title="自訂設定與時間調整">⚙️ 設定</button>
+        <a href="school_exam_timer_package.zip" download="校園考試倒數計時時鐘_通用版.zip" class="btn-icon btn-zip-download" title="下載整套離線專案壓縮檔 (.zip)">📦 下載專案包</a>
+        <button id="btnFullscreen" class="btn-icon" title="切換投影/全螢幕模式">⛶ 全螢幕</button>
+      </div>
+    </header>
+
+    <!-- 考程條件選擇區 (年級、日期、節數) -->
+    <nav class="selection-panel">
+      <div class="control-row">
+        <div class="field-item">
+          <label for="dateSelect">📅 考試日期：</label>
+          <select id="dateSelect" class="styled-select">
+            <!-- 動態生成日期選項 -->
+          </select>
+        </div>
+
+        <div class="field-item">
+          <label for="gradeSelect">🎒 學生年級：</label>
+          <select id="gradeSelect" class="styled-select">
+            <option value="1">一年級</option>
+            <option value="2">二年級</option>
+            <option value="3" selected>三年級</option>
+            <option value="4">四年級</option>
+            <option value="5">五年級</option>
+            <option value="6">六年級</option>
+          </select>
+        </div>
+
+        <div class="field-item">
+          <label for="sessionSelect">🔔 考試節次：</label>
+          <select id="sessionSelect" class="styled-select">
+            <!-- 動態生成節數與下課選項 -->
+          </select>
+        </div>
+
+        <div class="field-item auto-next-toggle">
+          <label class="switch-container" title="當前節次倒數結束後，自動進入下課或下一節">
+            <input type="checkbox" id="autoNextSwitch" checked>
+            <span class="slider"></span>
+            <span class="switch-label">自動接續下一節/下課</span>
+          </label>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 主展示區：科目、範圍、倒數計時大鐘 -->
+    <main class="main-display">
+      <!-- 考試科目與範圍看板 -->
+      <section class="exam-info-card" id="infoCard">
+        <div class="status-badge-container">
+          <span class="status-badge" id="statusBadge">考試進行中</span>
+          <span class="session-badge" id="sessionBadge">第 1 節</span>
+        </div>
+        <div class="subject-title-wrap">
+          <h2 class="subject-title" id="subjectTitle">英語</h2>
+        </div>
+        <div class="scope-box">
+          <span class="scope-tag">考試範圍</span>
+          <p class="scope-content" id="scopeContent">Get ready U1 U2 Review1</p>
+        </div>
+      </section>
+
+      <!-- 倒數計時數字時鐘本體 -->
+      <section class="timer-card">
+        <!-- 進度條 -->
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- 分與秒 巨大數字顯示 -->
+        <div class="digital-clock" id="digitalClock" aria-live="polite">
+          <div class="digits-box">
+            <span class="digits" id="minutes">40</span>
+            <span class="unit">分</span>
+          </div>
+          <span class="colon">:</span>
+          <div class="digits-box">
+            <span class="digits" id="seconds">00</span>
+            <span class="unit">秒</span>
+          </div>
+        </div>
+
+        <!-- 輔助提醒（例如最後5分鐘注意、提示交卷等） -->
+        <div class="hint-message" id="hintMessage">
+          🔔 考試時間請維持安靜，作答完畢請務必仔細檢查班級、姓名與座號。
+        </div>
+
+        <!-- 快速計時微調控制按鈕區 -->
+        <div class="timer-action-bar">
+          <button id="btnPrevSession" class="btn btn-secondary" title="上一節次">⏮ 上一節</button>
+          <button id="btnToggleTimer" class="btn btn-primary" title="開始或暫停計時">
+            <span id="btnToggleIcon">⏸</span> <span id="btnToggleText">暫停</span>
+          </button>
+          <button id="btnResetTimer" class="btn btn-secondary" title="重設當前節次時間">🔄 重設</button>
+          <button id="btnNextSession" class="btn btn-secondary" title="直接前往下一節次">⏭ 下一節</button>
+        </div>
+
+        <!-- 彈性調時區：提早/延後 -->
+        <div class="quick-adjust-bar">
+          <span class="adjust-label">時間彈性調控：</span>
+          <button class="btn-chip" data-adjust="-300" title="減少5分鐘">-5 分</button>
+          <button class="btn-chip" data-adjust="-60" title="減少1分鐘">-1 分</button>
+          <button class="btn-chip" data-adjust="60" title="延後1分鐘 / 增加1分鐘">+1 分</button>
+          <button class="btn-chip" data-adjust="300" title="延後5分鐘 / 增加5分鐘">+5 分</button>
+          <button class="btn-chip highlight" id="btnEarlyFinish" title="提前交卷或提前結束當節">提前結束本節 🏁</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- 底部當日考程預覽一覽表 -->
+    <footer class="schedule-overview">
+      <div class="overview-header">
+        <h3>📋 當日年級考試科目與時程預覽</h3>
+        <span class="tip">（點擊任一節次可直接快速切換）</span>
+      </div>
+      <div class="sessions-track" id="sessionsTrack">
+        <!-- 動態渲染卡片清單 -->
+      </div>
+    </footer>
+  </div>
+
+  <!-- 彈窗 1：學校名稱、校徽、學年度與考試標題編輯對話框 (Modal) -->
+  <div class="modal-backdrop" id="titleEditModal">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <h3>🏫 自訂學校名稱、校徽與考試標題</h3>
+        <button class="modal-close" id="btnCloseTitleModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- 學校名稱自訂 -->
+        <div class="form-item">
+          <label for="editSchoolName">🏫 學校名稱：</label>
+          <input type="text" id="editSchoolName" class="styled-input" placeholder="請輸入學校名稱（例如：嘉義市蘭潭國小）" value="嘉義市蘭潭國小">
+        </div>
+
+        <!-- 校徽圖案更換 -->
+        <div class="form-item">
+          <label>📷 學校校徽圖案：</label>
+          <div class="modal-logo-setting-box">
+            <div class="modal-logo-preview-wrap">
+              <img id="modalLogoPreview" src="school_logo.png" alt="校徽預覽" class="modal-logo-preview">
+            </div>
+            <div class="modal-logo-btns">
+              <label class="btn-sm btn-primary file-upload-btn">
+                📤 選擇新圖片
+                <input type="file" id="modalLogoUploadInput" accept="image/*" style="display: none;">
+              </label>
+              <button type="button" id="btnModalResetLogo" class="btn-sm">還原預設校徽</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-item">
+          <label for="editAcademicYear">學年度：</label>
+          <div class="input-with-buttons">
+            <button class="btn-sm" id="btnYearMinus">-1</button>
+            <input type="number" id="editAcademicYear" class="styled-input text-center" value="115" min="100" max="200">
+            <button class="btn-sm" id="btnYearPlus">+1</button>
+          </div>
+        </div>
+
+        <div class="form-item">
+          <label for="editSemester">學期別：</label>
+          <select id="editSemester" class="styled-select">
+            <option value="上學期">上學期</option>
+            <option value="下學期">下學期</option>
+          </select>
+        </div>
+
+        <div class="form-item">
+          <label for="editExamType">考查次別 / 考試名稱：</label>
+          <select id="editExamType" class="styled-select">
+            <option value="第一次定期考查">第一次定期考查</option>
+            <option value="第二次定期考查">第二次定期考查</option>
+            <option value="期中定期評量">期中定期評量</option>
+            <option value="期末定期評量">期末定期評量</option>
+            <option value="畢業考查">畢業考查</option>
+            <option value="自訂">-- 自訂輸入 --</option>
+          </select>
+          <input type="text" id="editCustomExamType" class="styled-input" placeholder="請輸入自訂考試名稱" style="display:none; margin-top:0.5rem;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCancelTitleModal" class="btn btn-secondary">取消</button>
+        <button id="btnSaveTitleModal" class="btn btn-primary">儲存更新</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 彈窗 2：考程與範圍資料庫管理 (匯出/匯入/線上編輯) -->
+  <div class="modal-backdrop" id="dataManageModal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3>📅 考試日期與節次範圍資料管理</h3>
+        <button class="modal-close" id="btnCloseDataModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- 檔案匯出與匯入功能列 -->
+        <div class="data-action-box">
+          <div class="action-desc">
+            <strong>📁 範例檔下載與資料匯入：</strong>
+            <p>您可以下載目前考程標準範例檔（JSON格式），以文字編輯器或Excel整理後上傳更新；或直接在下方線上編輯！</p>
+          </div>
+          <div class="action-buttons">
+            <button id="btnDownloadTemplate" class="btn btn-secondary">
+              📥 下載考程範例檔 (JSON)
+            </button>
+            <label class="btn btn-primary file-upload-btn">
+              📤 上傳考程更新檔
+              <input type="file" id="uploadJsonInput" accept=".json" style="display: none;">
+            </label>
+            <button id="btnResetToLantanDefault" class="btn-sm btn-outline-danger" title="還原為原始115蘭潭國小課表">
+              🔄 還原蘭潭預設課表
+            </button>
+          </div>
+        </div>
+
+        <!-- 線上快速檢視與編輯區 -->
+        <fieldset class="settings-group">
+          <legend>✏️ 線上編輯當前選擇年級的節次與範圍</legend>
+          <div class="form-row">
+            <div class="field-item">
+              <label>管理日期：</label>
+              <select id="manageDateSelect" class="styled-select"></select>
+              <button id="btnAddNewDate" class="btn-sm">➕ 新增考試日期</button>
+              <button id="btnDeleteDate" class="btn-sm btn-outline-danger">🗑️ 刪除此日期</button>
+            </div>
+            <div class="field-item">
+              <label>管理年級：</label>
+              <select id="manageGradeSelect" class="styled-select">
+                <option value="1">一年級</option>
+                <option value="2">二年級</option>
+                <option value="3">三年級</option>
+                <option value="4">四年級</option>
+                <option value="5">五年級</option>
+                <option value="6">六年級</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 節次表格 -->
+          <div class="table-container">
+            <table class="exam-manage-table" id="manageSessionsTable">
+              <thead>
+                <tr>
+                  <th width="12%">節次</th>
+                  <th width="15%">節次名稱</th>
+                  <th width="18%">科目</th>
+                  <th width="40%">考試範圍</th>
+                  <th width="15%">操作</th>
+                </tr>
+              </thead>
+              <tbody id="manageSessionsTbody">
+                <!-- 動態注入表格內容 -->
+              </tbody>
+            </table>
+          </div>
+          <button id="btnAddSessionRow" class="btn-sm btn-primary" style="margin-top: 0.75rem;">➕ 新增考試節次</button>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button id="btnSaveDataChanges" class="btn btn-primary">儲存並立即套用考程</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 彈窗 3：系統自訂設定對話框 (Modal) -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>⚙️ 考場時鐘自訂設定</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- 鈴聲與音效 -->
+        <fieldset class="settings-group">
+          <legend>🔔 鐘聲與提示音</legend>
+          <div class="form-row">
+            <label for="soundEnabled">
+              <input type="checkbox" id="soundEnabled" checked> 啟用結束鐘聲提示
+            </label>
+            <label for="fiveMinWarning">
+              <input type="checkbox" id="fiveMinWarning" checked> 剩餘 5 分鐘時發出預備提醒音
+            </label>
+          </div>
+          <div class="form-row">
+            <label for="soundStyle">鐘聲音效選擇：</label>
+            <select id="soundStyle" class="styled-select">
+              <option value="westminster">學校經典西敏寺鐘聲 (叮咚噹咚~叮噹咚叮)</option>
+              <option value="chime">現代清脆雙音 (叮咚 Ding-Dong)</option>
+              <option value="alarm">經典考試長鈴聲 (電子連續長鈴)</option>
+            </select>
+            <button id="btnTestSound" class="btn-sm">🔊 試聽鐘聲</button>
+          </div>
+          <div class="form-row">
+            <label for="soundVolume">音量控制：</label>
+            <input type="range" id="soundVolume" min="0" max="1" step="0.05" value="0.8">
+            <span id="volumeValue">80%</span>
+          </div>
+        </fieldset>
+
+        <!-- 時間長度預設調整 -->
+        <fieldset class="settings-group">
+          <legend>⏱️ 預設時間長度（分鐘）</legend>
+          <div class="form-grid-3">
+            <div class="form-item">
+              <label for="defaultExamTime">考試每節時間：</label>
+              <input type="number" id="defaultExamTime" min="1" max="120" value="40"> 分鐘
+            </div>
+            <div class="form-item">
+              <label for="defaultBreakTime">一般下課時間：</label>
+              <input type="number" id="defaultBreakTime" min="1" max="60" value="10"> 分鐘
+            </div>
+            <div class="form-item">
+              <label for="defaultBreak2Time">第二次下課 (大下課)：</label>
+              <input type="number" id="defaultBreak2Time" min="1" max="60" value="20"> 分鐘
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- 介面主題與校徽圖案 -->
+        <fieldset class="settings-group">
+          <legend>🎨 顯示主題與校徽自訂</legend>
+          <div class="form-row">
+            <label for="themeSelect">介面配色主題：</label>
+            <select id="themeSelect" class="styled-select">
+              <option value="theme-default">🌲 蘭潭校園（湖光翠綠清新）</option>
+              <option value="theme-cosmic">🌌 宇宙天文（蘭潭星象深邃藍）</option>
+              <option value="theme-dark">🌙 考場投影專用（深色高對比）</option>
+              <option value="theme-amber">🍂 護眼暖色（琥珀專注金）</option>
+              <option value="theme-chalkboard">🎓 黑板粉筆風（復古深綠）</option>
+            </select>
+          </div>
+          <div class="form-row" style="margin-top: 0.8rem;">
+            <label>自訂校徽圖檔：</label>
+            <label class="btn-sm file-upload-btn">
+              📷 選擇圖片更換
+              <input type="file" id="uploadLogoInput" accept="image/*" style="display: none;">
+            </label>
+            <button id="btnResetLogo" class="btn-sm">還原預設校徽</button>
+          </div>
+        </fieldset>
+
+        <!-- 當前節次自訂名稱與範圍 -->
+        <fieldset class="settings-group">
+          <legend>✏️ 即時調整當前節次內容（臨時快速異動）</legend>
+          <div class="form-item">
+            <label for="editSubjectName">科目名稱：</label>
+            <input type="text" id="editSubjectName" class="styled-input">
+          </div>
+          <div class="form-item">
+            <label for="editScopeText">考試範圍：</label>
+            <textarea id="editScopeText" class="styled-textarea" rows="2"></textarea>
+          </div>
+          <button id="btnApplyCustomContent" class="btn-sm btn-primary">套用修改至當前節次</button>
+        </fieldset>
+
+        <!-- 考場注意事項標語 -->
+        <fieldset class="settings-group">
+          <legend>📢 考場提醒標語內容</legend>
+          <textarea id="customHintText" class="styled-textarea" rows="2">🔔 考試時間請維持安靜，作答完畢請務必仔細檢查班級、姓名與座號。</textarea>
+          <button id="btnApplyHint" class="btn-sm btn-primary">更新提醒文字</button>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button id="btnResetDefaults" class="btn btn-secondary">恢復原廠預設值</button>
+        <button id="btnSaveModal" class="btn btn-primary">完成儲存並關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 彈窗 4：系統操作使用說明書 (Modal) -->
+  <div class="modal-backdrop" id="helpGuideModal">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3>📖 蘭潭國小 考場時鐘系統 操作使用說明書</h3>
+        <button class="modal-close" id="btnCloseHelpModal">&times;</button>
+      </div>
+      <div class="modal-body help-guide-body">
+        <!-- 頂部快速離線包下載 -->
+        <div class="help-download-card">
+          <div class="help-download-info">
+            <h4>📦 離線專案完整壓縮包下載</h4>
+            <p>包含完整網頁、蘭潭校徽圖檔、考程資料範本與說明文件。免安裝軟體，下載解壓縮後即可在任何教室電腦離線執行！</p>
+          </div>
+          <a href="LTES_exam_system.zip" download="蘭潭國小_考試倒數計時時鐘專案包.zip" class="btn btn-primary">
+            📥 下載整套專案包 (.zip)
+          </a>
+        </div>
+
+        <section class="help-section">
+          <h4>🚀 快速開始（如何開啟與投影）</h4>
+          <ul>
+            <li><strong>免安裝、免連網</strong>：在電腦資料夾中對著 <code>index.html</code> 雙擊滑鼠左鍵，即可直接於 Chrome、Edge 或任何瀏覽器開啟。</li>
+            <li><strong>全螢幕投影首選</strong>：建議開啟後點擊右上角「<strong>⛶ 全螢幕</strong>」或按下鍵盤 <strong><code>F</code></strong> 鍵，數字時鐘將以最大畫面清晰呈現，黑板與後排學生均能一目了然。</li>
+          </ul>
+        </section>
+
+        <section class="help-section">
+          <h4>一、主畫面功能導覽</h4>
+          <table class="help-table">
+            <thead>
+              <tr><th width="28%">畫面區塊</th><th>功能說明</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>🏫 蘭潭校徽與標題</strong></td>
+                <td>左上角顯示學校官方校徽。點擊旁邊的學年度標題列（帶 ✏️ 筆圖示處），可直接自訂修改學年、學期與考查名稱。</td>
+              </tr>
+              <tr>
+                <td><strong>🕒 現在標準時間</strong></td>
+                <td>右上角即時顯示今日日期、星期與當前秒數，方便監考老師對時。</td>
+              </tr>
+              <tr>
+                <td><strong>📅 考程條件選擇列</strong></td>
+                <td>提供「考試日期」、「學生年級」、「考試節次」下拉選單，選取後立即載入對應科目的倒數與範圍。</td>
+              </tr>
+              <tr>
+                <td><strong>🔄 自動接續開關</strong></td>
+                <td>勾選後，當節倒數結束（00:00）將<strong>自動切換至下課休息倒數</strong>，下課結束後<strong>自動接續下一節考試</strong>。</td>
+              </tr>
+              <tr>
+                <td><strong>📋 科目與範圍看板</strong></td>
+                <td>顯示當前「考試科目」、「節次狀態（考試中 / 下課中 / 正常上課）」與詳細評量範圍。</td>
+              </tr>
+              <tr>
+                <td><strong>⏱️ 數字時鐘與進度條</strong></td>
+                <td>超大等寬字體顯示分與秒，並伴隨直覺的色彩進度條（考試中為紅色、下課中為藍色、小於5分鐘為警戒金黃色）。</td>
+              </tr>
+              <tr>
+                <td><strong>📑 當日考程預覽軌</strong></td>
+                <td>畫面底部以卡片列出當日所有節次與下課，<strong>點選任一卡片可直接切換至該節</strong>。</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="help-section">
+          <h4>二、計時操作與時間微調控制</h4>
+          <ul>
+            <li><strong>開始 / 暫停</strong>：點選畫面中央「開始/暫停」按鈕，或按鍵盤 <strong><code>空白鍵 Space</code></strong>。</li>
+            <li><strong>重設時間</strong>：點選「🔄 重設」可將當前節次恢復至初始時間。</li>
+            <li><strong>時間彈性微調</strong>：
+              <ul>
+                <li>若因發卷、試場說明或突發狀況需延後或加時，點選 <code>+1 分</code> 或 <code>+5 分</code>。</li>
+                <li>需縮短時間，可點選 <code>-1 分</code> 或 <code>-5 分</code>。</li>
+              </ul>
+            </li>
+            <li><strong>提前結束本節 🏁</strong>：若學生全數提前交卷或該節提早結束，點擊此按鈕將立即鳴響結束鐘聲並銜接下一個階段。</li>
+          </ul>
+        </section>
+
+        <section class="help-section">
+          <h4>三、學年度、學期與考查名稱自訂</h4>
+          <p>滑鼠直接點擊頂部標題列，在彈出的視窗中：</p>
+          <ul>
+            <li><strong>學年度</strong>：可按 <code>+1</code> / <code>-1</code> 或直接輸入數字（如 115、116 等）。</li>
+            <li><strong>學期別</strong>：下拉切換「上學期」或「下學期」。</li>
+            <li><strong>考查次別</strong>：可選擇「第一次定期考查」、「第二次定期考查」、「期中評量」、「期末評量」、「畢業考查」或勾選「自訂」輸入文字。</li>
+          </ul>
+        </section>
+
+        <section class="help-section">
+          <h4>四、考程資料庫線上管理（匯入 / 匯出）</h4>
+          <p>點擊頂部「<strong>📅 考程管理</strong>」按鈕：</p>
+          <ul>
+            <li><strong>線上表格編輯</strong>：切換日期與年級，即可在表格內自由修改節次序號、節次名稱、科目與範圍，並可「➕ 新增節次」或「🗑️ 刪除列」。</li>
+            <li><strong>➕ 新增考試日期</strong>：可建立新的考試天數（例如 11/5 或 1/15）。</li>
+            <li><strong>📥 下載考程範例檔 (JSON)</strong>：匯出全校標準格式檔案，可在電腦中大量編輯。</li>
+            <li><strong>📤 上傳考程更新檔</strong>：將編輯完成的 JSON 檔上傳，立即套用至全校各年級。</li>
+            <li><strong>🔄 還原蘭潭預設課表</strong>：隨時一鍵還原為 115 學年度第一次定期考查官方課表。</li>
+          </ul>
+        </section>
+
+        <section class="help-section">
+          <h4>五、鐘聲音效與主題外觀設定</h4>
+          <p>點擊頂部「<strong>⚙️ 設定</strong>」按鈕：</p>
+          <ul>
+            <li><strong>校園鐘聲選擇</strong>：
+              <ul>
+                <li>🏫 <strong>西敏寺鐘聲</strong>（學校經典上/下課四音階鐘聲，溫柔優美）</li>
+                <li>🔔 <strong>現代清脆雙音</strong>（清新 Ding-Dong 音）</li>
+                <li>⏰ <strong>電子長鈴聲</strong>（連續長音鈴響）</li>
+              </ul>
+            </li>
+            <li><strong>作息時間彈性調整</strong>：每節考試時間（預設 40 分鐘）、一般下課時間（預設 10 分鐘）與<strong>第二次下課（課間大下課，預設 20 分鐘）</strong>均可自由自訂。</li>
+            <li><strong>剩餘 5 分鐘提醒音</strong>：勾選後將在最後 5 分鐘時播放輕柔叮咚音，提醒學生檢查畫卡與姓名座號。</li>
+            <li><strong>五大主題切換</strong>：
+              <ul>
+                <li>🌲 <strong>蘭潭校園</strong>（湖光翠綠清新）</li>
+                <li>🌌 <strong>宇宙天文</strong>（蘭潭星象深邃藍，星軌星雲科技感）</li>
+                <li>🌙 <strong>考場投影專用</strong>（深色超高對比，投影清晰不刺眼）</li>
+                <li>🍂 <strong>護眼暖色</strong>（琥珀專注金）</li>
+                <li>🎓 <strong>黑板粉筆風</strong>（復古墨綠教室感）</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+
+        <section class="help-section">
+          <h4>六、鍵盤快捷鍵一覽</h4>
+          <table class="help-table">
+            <thead><tr><th width="35%">按鍵</th><th>操作動作</th></tr></thead>
+            <tbody>
+              <tr><td><strong><code>Space</code>（空白鍵）</strong></td><td>暫停 / 繼續計時</td></tr>
+              <tr><td><strong><code>F</code> 鍵</strong></td><td>進入 / 退出全螢幕投影模式</td></tr>
+              <tr><td><strong><code>→</code> 方向鍵右</strong></td><td>直接跳至下一節次</td></tr>
+              <tr><td><strong><code>←</code> 方向鍵左</strong></td><td>返回上一節次</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="help-section">
+          <h4>七、常見問題與疑難排解 (FAQ)</h4>
+          <ul>
+            <li><strong>Q1：到 00:00 為什麼沒有聲音？</strong><br>
+            瀏覽器安全機制要求使用者進入網頁後至少有一次點擊互動；只需點擊網頁任意處、點擊「開始」或「試聽鐘聲」即可解鎖音效，並請確認電腦音量已打開。</li>
+            <li><strong>Q2：更換其他教室電腦，設定會保留嗎？</strong><br>
+            設定儲存在本機瀏覽器。若要轉移到其他教室，可點擊「考程管理」下載 JSON 檔，到另一台電腦上傳即可！</li>
+            <li><strong>Q3：改亂了想重來怎麼辦？</strong><br>
+            在「考程管理」點擊「還原蘭潭預設課表」，或在「設定」點擊「恢復原廠預設值」，即可瞬間恢復初始課表。</li>
+          </ul>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button id="btnCloseHelpModalBtn" class="btn btn-primary">了解並關閉</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

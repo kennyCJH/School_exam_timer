@@ -1,0 +1,75 @@
+{
+  "schoolName": "嘉義市蘭潭國小",
+  "titleConfig": {
+    "year": 115,
+    "semester": "上學期",
+    "examType": "第一次定期考查"
+  },
+  "description": "蘭潭國小定期考查考試時間與科目範圍標準設定檔。您可以複製或修改此檔案後，在網頁點擊「考程管理」->「上傳考程更新檔」進行快速更新。",
+  "examSchedule": {
+    "11-03": {
+      "dateName": "11月3日 (星期二) - 英語、國語、自然",
+      "grades": {
+        "1": [
+          { "session": 1, "sessionName": "第一節", "subject": "國語", "scope": "首冊全部", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "正常上課", "scope": "無考查範圍，依日常課表正常上課", "type": "regular" },
+          { "session": 3, "sessionName": "第三節", "subject": "正常上課", "scope": "無考查範圍，依日常課表正常上課", "type": "regular" }
+        ],
+        "2": [
+          { "session": 1, "sessionName": "第一節", "subject": "國語", "scope": "第一課~第六課 (含統整活動一、二)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "正常上課", "scope": "無考查範圍，依日常課表正常上課", "type": "regular" },
+          { "session": 3, "sessionName": "第三節", "subject": "正常上課", "scope": "無考查範圍，依日常課表正常上課", "type": "regular" }
+        ],
+        "3": [
+          { "session": 1, "sessionName": "第一節", "subject": "英語", "scope": "Get ready U1 U2 Review1", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "國語", "scope": "第一課~第六課 (含語文天地一、二)", "type": "exam" },
+          { "session": 3, "sessionName": "第三節", "subject": "自然", "scope": "第一單元~第二單元", "type": "exam" }
+        ],
+        "4": [
+          { "session": 1, "sessionName": "第一節", "subject": "英語", "scope": "Starter~Review 1", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "國語", "scope": "第一課~第六課 (含閱讀階梯)", "type": "exam" },
+          { "session": 3, "sessionName": "第三節", "subject": "自然", "scope": "第一單元~第二單元", "type": "exam" }
+        ],
+        "5": [
+          { "session": 1, "sessionName": "第一節", "subject": "英語", "scope": "Starter~Review 1+ Hotel", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "國語", "scope": "第一課~第六課 (含學習地圖一、二)", "type": "exam" },
+          { "session": 3, "sessionName": "第三節", "subject": "自然", "scope": "第一單元~第二單元", "type": "exam" }
+        ],
+        "6": [
+          { "session": 1, "sessionName": "第一節", "subject": "英語", "scope": "Starter-Review 1+ Chiayi Adventures Topic1", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "國語", "scope": "第一課~第六課 (含學習地圖一、二)", "type": "exam" },
+          { "session": 3, "sessionName": "第三節", "subject": "自然", "scope": "第一單元~第二單元", "type": "exam" }
+        ]
+      }
+    },
+    "11-04": {
+      "dateName": "11月4日 (星期三) - 數學、社會",
+      "grades": {
+        "1": [
+          { "session": 1, "sessionName": "第一節", "subject": "數學", "scope": "第一單元~第五單元 (含學習加油「讚」)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "正常上課", "scope": "無考查範圍，依日常課表正常上課", "type": "regular" }
+        ],
+        "2": [
+          { "session": 1, "sessionName": "第一節", "subject": "數學", "scope": "第一單元~第五單元 (含加油小站一)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "正常上課", "scope": "無考查範圍，依日常課表正常上課", "type": "regular" }
+        ],
+        "3": [
+          { "session": 1, "sessionName": "第一節", "subject": "數學", "scope": "第一單元~第五單元 2 (5-2)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "社會", "scope": "第一單元~第二單元", "type": "exam" }
+        ],
+        "4": [
+          { "session": 1, "sessionName": "第一節", "subject": "數學", "scope": "第一單元~第五單元 (含加油小站 1、魔數小偵探)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "社會", "scope": "第一單元~第三單元", "type": "exam" }
+        ],
+        "5": [
+          { "session": 1, "sessionName": "第一節", "subject": "數學", "scope": "第一單元~第五單元 (含加油小站一)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "社會", "scope": "第一單元~第二單元", "type": "exam" }
+        ],
+        "6": [
+          { "session": 1, "sessionName": "第一節", "subject": "數學", "scope": "第一單元~第四單元 (含加油小站一)", "type": "exam" },
+          { "session": 2, "sessionName": "第二節", "subject": "社會", "scope": "第一單元~第二單元", "type": "exam" }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1203 @@
+:root {
+  --bg-gradient: linear-gradient(135deg, #0f2b26 0%, #174239 50%, #0d231f 100%);
+  --panel-bg: rgba(255, 255, 255, 0.08);
+  --panel-border: rgba(255, 255, 255, 0.15);
+  --card-bg: rgba(255, 255, 255, 0.12);
+  --text-main: #ffffff;
+  --text-muted: #b5d5ce;
+  --accent-color: #2ed573;
+  --accent-glow: rgba(46, 213, 115, 0.4);
+  --exam-active-color: #ff4757;
+  --exam-active-glow: rgba(255, 71, 87, 0.4);
+  --break-color: #1e90ff;
+  --break-glow: rgba(30, 144, 255, 0.4);
+  --warning-color: #ffa502;
+  --font-family: 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+  --digit-font: 'Chivo Mono', monospace;
+}
+
+/* 主題定義 */
+body.theme-default {
+  --bg-gradient: linear-gradient(135deg, #092c24 0%, #134e42 50%, #08211b 100%);
+  --accent-color: #2ed573;
+}
+
+body.theme-dark {
+  --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #030712 100%);
+  --panel-bg: rgba(30, 41, 59, 0.7);
+  --panel-border: rgba(71, 85, 105, 0.4);
+  --card-bg: rgba(30, 41, 59, 0.85);
+  --accent-color: #38bdf8;
+  --text-muted: #94a3b8;
+}
+
+body.theme-amber {
+  --bg-gradient: linear-gradient(135deg, #2b1c06 0%, #452c08 50%, #1e1302 100%);
+  --accent-color: #f59e0b;
+  --accent-glow: rgba(245, 158, 11, 0.4);
+  --text-muted: #fcd34d;
+}
+
+body.theme-chalkboard {
+  --bg-gradient: linear-gradient(135deg, #1c2e24 0%, #22382c 50%, #16241c 100%);
+  --accent-color: #a7f3d0;
+  --panel-bg: rgba(0, 0, 0, 0.25);
+  --panel-border: rgba(255, 255, 255, 0.2);
+  --text-muted: #d1fae5;
+}
+
+body.theme-cosmic {
+  --bg-gradient: radial-gradient(ellipse at 80% 20%, rgba(88, 28, 135, 0.45) 0%, transparent 60%),
+                 radial-gradient(ellipse at 20% 80%, rgba(30, 58, 138, 0.45) 0%, transparent 60%),
+                 linear-gradient(135deg, #050713 0%, #0b112c 50%, #130924 100%);
+  --panel-bg: rgba(15, 23, 42, 0.65);
+  --panel-border: rgba(147, 197, 253, 0.25);
+  --card-bg: rgba(15, 23, 42, 0.8);
+  --text-main: #f8fafc;
+  --text-muted: #93c5fd;
+  --accent-color: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.45);
+  --exam-active-color: #f43f5e;
+  --exam-active-glow: rgba(244, 63, 94, 0.45);
+  --break-color: #818cf8;
+  --break-glow: rgba(129, 140, 248, 0.45);
+}
+
+body.theme-cosmic .digital-clock {
+  color: #e0f2fe;
+  text-shadow: 0 0 25px rgba(56, 189, 248, 0.6), 0 0 50px rgba(129, 140, 248, 0.3);
+}
+
+body.theme-cosmic .badge-icon {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-family);
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* 頂部資訊列 */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  margin-bottom: 1rem;
+}
+
+.school-brand {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+/* 學校校徽圖樣與直接懸浮換圖 */
+.badge-icon-wrap {
+  position: relative;
+  cursor: pointer;
+}
+
+.badge-icon {
+  width: 62px;
+  height: 62px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.badge-icon-wrap:hover .badge-icon {
+  transform: scale(1.06);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.badge-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 16px;
+}
+
+.badge-icon-wrap:hover .badge-hover-overlay {
+  opacity: 1;
+}
+
+.school-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* 可編輯學校名稱區 */
+.main-title-editable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0.5rem;
+  margin-left: -0.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.main-title-editable:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.main-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+/* 彈窗內的校徽設定盒 */
+.modal-logo-setting-box {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--panel-border);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+}
+
+.modal-logo-preview-wrap {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-logo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.modal-logo-btns {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* 可編輯副標題區 */
+.sub-title-editable {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--panel-border);
+  padding: 0.25rem 0.65rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 0.25rem;
+  font-size: 0.92rem;
+  color: var(--text-muted);
+}
+
+.sub-title-editable:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-color);
+  color: #fff;
+}
+
+.title-chip {
+  background: rgba(46, 213, 115, 0.2);
+  color: #2ed573;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 700;
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.edit-hint-icon {
+  font-size: 0.85rem;
+  opacity: 0.6;
+  margin-left: 0.2rem;
+}
+
+.sub-title-editable:hover .edit-hint-icon {
+  opacity: 1;
+}
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.clock-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  font-family: var(--digit-font);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  border: 1px solid var(--panel-border);
+}
+
+.btn-icon {
+  background: var(--panel-bg);
+  color: var(--text-main);
+  border: 1px solid var(--panel-border);
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* 考程條件選擇導航列 */
+.selection-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 0.85rem 1.5rem;
+  backdrop-filter: blur(12px);
+  margin-bottom: 1.25rem;
+}
+
+.control-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  justify-content: space-between;
+}
+
+.field-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.field-item label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+.styled-select, .styled-input, .styled-textarea {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border: 1px solid var(--panel-border);
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: var(--font-family);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.styled-select:focus, .styled-input:focus, .styled-textarea:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* 自動接續 Switch 開關 */
+.auto-next-toggle .switch-container {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch-container input {
+  display: none;
+}
+
+.slider {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  transition: .3s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: .3s;
+}
+
+input:checked + .slider {
+  background-color: var(--accent-color);
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.switch-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* 主展示區 (Grid: 左側科目資訊，右側/中央倒數時鐘) */
+.main-display {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.25rem;
+  flex: 1;
+  align-items: stretch;
+}
+
+/* 考試科目與範圍卡片 */
+.exam-info-card {
+  background: var(--card-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 1.75rem;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.status-badge-container {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.status-badge {
+  background: var(--exam-active-color);
+  color: white;
+  padding: 0.4rem 1rem;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px var(--exam-active-glow);
+  transition: all 0.3s ease;
+}
+
+.status-badge.break {
+  background: var(--break-color);
+  box-shadow: 0 0 15px var(--break-glow);
+}
+
+.status-badge.normal {
+  background: var(--accent-color);
+  box-shadow: 0 0 15px var(--accent-glow);
+}
+
+.session-badge {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--text-main);
+  padding: 0.4rem 0.9rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 700;
+  border: 1px solid var(--panel-border);
+}
+
+.subject-title-wrap {
+  margin-bottom: 1.25rem;
+}
+
+.subject-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  letter-spacing: 2px;
+}
+
+.scope-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  margin-top: auto;
+}
+
+.scope-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.6rem;
+  color: var(--text-muted);
+}
+
+.scope-content {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  font-weight: 600;
+  color: #f1f2f6;
+  word-break: break-word;
+}
+
+/* 倒數計時數字時鐘卡片 */
+.timer-card {
+  background: var(--card-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 1.75rem 2rem;
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 進度條 */
+.progress-bar-container {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--accent-color);
+  box-shadow: 0 0 10px var(--accent-glow);
+  transition: width 0.4s linear, background-color 0.3s;
+}
+
+.progress-bar.exam-mode {
+  background: var(--exam-active-color);
+  box-shadow: 0 0 10px var(--exam-active-glow);
+}
+
+.progress-bar.break-mode {
+  background: var(--break-color);
+  box-shadow: 0 0 10px var(--break-glow);
+}
+
+/* 巨大數字時鐘 */
+.digital-clock {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--digit-font);
+  font-size: clamp(6.5rem, 15vw, 13rem);
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  user-select: none;
+  margin: 1rem 0;
+}
+
+.digital-clock .digits-box {
+  display: flex;
+  align-items: baseline;
+  position: relative;
+}
+
+.digital-clock .unit {
+  font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+  font-family: var(--font-family);
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: 0.3rem;
+  opacity: 0.85;
+}
+
+.digital-clock .colon {
+  font-family: var(--digit-font);
+  opacity: 0.7;
+  animation: pulse 1s infinite;
+  display: inline-block;
+  padding: 0 0.2rem;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 0.3; }
+}
+
+/* 倒數進入倒數5分鐘時的警戒動畫 */
+.timer-card.warning-5min .digital-clock {
+  color: #ffda79;
+  text-shadow: 0 0 25px rgba(255, 218, 121, 0.8);
+}
+
+.timer-card.warning-1min .digital-clock {
+  color: #ff5252;
+  text-shadow: 0 0 35px rgba(255, 82, 82, 0.9);
+  animation: flash-urgent 1s infinite alternate;
+}
+
+@keyframes flash-urgent {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.02); }
+}
+
+/* 提示訊息看板 */
+.hint-message {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #e0f2fe;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.65rem 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-color);
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+/* 控制按鈕列 */
+.timer-action-bar {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  padding: 0.75rem 1.6rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: var(--font-family);
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--accent-color);
+  color: #0d231f;
+  box-shadow: 0 4px 15px var(--accent-glow);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid var(--panel-border);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-outline-danger {
+  background: rgba(255, 71, 87, 0.15);
+  color: #ff6b81;
+  border: 1px solid #ff4757;
+}
+
+.btn-outline-danger:hover {
+  background: #ff4757;
+  color: #fff;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* 快速調時按鈕晶片列 */
+.quick-adjust-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.15);
+  width: 100%;
+}
+
+.adjust-label {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.btn-chip {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--panel-border);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-chip:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+}
+
+.btn-chip.highlight {
+  background: rgba(255, 71, 87, 0.25);
+  border-color: var(--exam-active-color);
+  color: #ff6b81;
+}
+
+.btn-chip.highlight:hover {
+  background: var(--exam-active-color);
+  color: white;
+}
+
+/* 底部當日排程軌跡 */
+.schedule-overview {
+  margin-top: 1.25rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  backdrop-filter: blur(12px);
+}
+
+.overview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.overview-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.overview-header .tip {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.sessions-track {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.session-chip-card {
+  flex: 0 0 auto;
+  min-width: 170px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.session-chip-card:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.session-chip-card.active {
+  border-color: var(--accent-color);
+  background: rgba(46, 213, 115, 0.15);
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.session-chip-card .chip-title {
+  font-weight: 800;
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+}
+
+.session-chip-card .chip-subject {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.session-chip-card .chip-time {
+  font-size: 0.8rem;
+  color: #a4b0be;
+  margin-top: 0.25rem;
+}
+
+/* 全螢幕模式最佳化 */
+body:fullscreen, body:-webkit-full-screen {
+  padding: 0;
+}
+
+body:fullscreen .app-container, body:-webkit-full-screen .app-container {
+  padding: 1.5rem 2.5rem;
+  max-width: 100vw;
+  height: 100vh;
+}
+
+body:fullscreen .digital-clock, body:-webkit-full-screen .digital-clock {
+  font-size: clamp(8rem, 18vw, 16rem);
+}
+
+/* 設定對話框 Modal 系統 */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.modal-backdrop.show {
+  display: flex;
+}
+
+.modal-content {
+  background: #1a2c27;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 720px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  color: #fff;
+  animation: modal-enter 0.25s ease-out;
+}
+
+.modal-content.modal-sm {
+  max-width: 480px;
+}
+
+.modal-content.modal-lg {
+  max-width: 960px;
+}
+
+@keyframes modal-enter {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.8rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.settings-group {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.settings-group legend {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent-color);
+  padding: 0 0.5rem;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+.form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-top: 0.6rem;
+}
+
+@media (max-width: 640px) {
+  .form-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.6rem;
+}
+
+.form-item label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.input-with-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.input-with-buttons input {
+  max-width: 140px;
+}
+
+.btn-sm {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.btn-sm:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.btn-sm.btn-primary {
+  background: var(--accent-color);
+  color: #0b1a16;
+  border: none;
+}
+
+.file-upload-btn {
+  cursor: pointer;
+  user-select: none;
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* 資料管理專屬區塊 */
+.data-action-box {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.data-action-box .action-desc p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  margin-top: 0.3rem;
+  line-height: 1.5;
+}
+
+.data-action-box .action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 0.8rem;
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+}
+
+.exam-manage-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.exam-manage-table th, .exam-manage-table td {
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.exam-manage-table th {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.exam-manage-table td input {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 6px;
+}
+
+.exam-manage-table td input:focus {
+  border-color: var(--accent-color);
+  outline: none;
+}
+
+/* 響應式調整 */
+@media (max-width: 960px) {
+  .main-display {
+    grid-template-columns: 1fr;
+  }
+  .exam-info-card {
+    min-height: auto;
+  }
+  .subject-title {
+    font-size: 2.5rem;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 下載專案包快捷按鈕 */
+.btn-zip-download {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.btn-zip-download:hover {
+  background: #38bdf8;
+  color: #0b112c;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* 說明書 Modal 專屬排版 */
+.help-guide-body {
+  gap: 1.5rem;
+}
+
+.help-download-card {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(129, 140, 248, 0.15) 100%);
+  border: 1px solid rgba(147, 197, 253, 0.3);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.help-download-info h4 {
+  font-size: 1.15rem;
+  color: #38bdf8;
+  margin-bottom: 0.35rem;
+}
+
+.help-download-info p {
+  color: #cbd5e1;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.help-section {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+}
+
+.help-section h4 {
+  font-size: 1.15rem;
+  color: var(--accent-color);
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.4rem;
+}
+
+.help-section p {
+  line-height: 1.6;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.help-section ul {
+  padding-left: 1.5rem;
+  line-height: 1.7;
+  font-size: 0.95rem;
+  color: #cbd5e1;
+}
+
+.help-section code {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-family: var(--digit-font);
+  font-size: 0.9em;
+  color: #fef08a;
+}
+
+.help-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.92rem;
+}
+
+.help-table th, .help-table td {
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  line-height: 1.5;
+}
+
+.help-table th {
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.help-table td {
+  background: rgba(0, 0, 0, 0.15);
+  color: #e2e8f0;
+}
