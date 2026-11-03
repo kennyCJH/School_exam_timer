@@ -1247,6 +1247,33 @@ function initEventListeners() {
   });
 }
 
+// 初始化點閱次數計數器
+function initVisitorCounter() {
+  const counterEl = document.getElementById("visitorCount");
+  if (!counterEl) return;
+
+  const namespace = "kennycjh_school_timer";
+  const localKey = "exam_timer_visit_count_" + namespace;
+  let localCount = parseInt(localStorage.getItem(localKey), 10) || 0;
+  localCount++;
+  localStorage.setItem(localKey, localCount);
+  counterEl.textContent = localCount.toLocaleString();
+
+  // 嘗試與雲端計數服務同步累計
+  fetch(`https://api.counterapi.dev/v1/${namespace}/visits/up`)
+    .then(res => res.json())
+    .then(data => {
+      if (data && typeof data.count === "number") {
+        const finalCount = Math.max(data.count, localCount);
+        counterEl.textContent = finalCount.toLocaleString();
+        localStorage.setItem(localKey, finalCount);
+      }
+    })
+    .catch(() => {
+      // 離線或網絡限制時自動平滑回退，維持本地計數
+    });
+}
+
 // 初始化
 function initApp() {
   loadSettings();
@@ -1260,6 +1287,7 @@ function initApp() {
   selectSession(0);
 
   initEventListeners();
+  initVisitorCounter();
 }
 
 document.addEventListener("DOMContentLoaded", initApp);

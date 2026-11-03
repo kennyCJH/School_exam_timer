@@ -1201,3 +1201,74 @@ body:fullscreen .digital-clock, body:-webkit-full-screen .digital-clock {
   background: rgba(0, 0, 0, 0.15);
   color: #e2e8f0;
 }
+
+/* 頁尾宣告與點閱次數計數器 */
+.site-footer {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.developer-info {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.visitor-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--panel-border);
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.counter-eye {
+  font-size: 1rem;
+}
+
+.counter-text {
+  font-weight: 500;
+}
+
+.counter-number {
+  font-family: var(--digit-font);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--accent-color);
+  letter-spacing: 1px;
+  min-width: 2.2rem;
+  text-align: center;
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.counter-unit {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.6rem;
+  }
+}

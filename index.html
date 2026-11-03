@@ -158,13 +158,26 @@
     </main>
 
     <!-- 底部當日考程預覽一覽表 -->
-    <footer class="schedule-overview">
+    <section class="schedule-overview">
       <div class="overview-header">
         <h3>📋 當日年級考試科目與時程預覽</h3>
         <span class="tip">（點擊任一節次可直接快速切換）</span>
       </div>
       <div class="sessions-track" id="sessionsTrack">
         <!-- 動態渲染卡片清單 -->
+      </div>
+    </section>
+
+    <!-- 頁尾宣告與點閱次數計數器 -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span class="developer-info">Designed and Developed by 邱榮輝｜嘉義市 © 2026.</span>
+        <div class="visitor-counter" title="本網站累積點閱次數">
+          <span class="counter-eye">👀</span>
+          <span class="counter-text">點閱次數：</span>
+          <span class="counter-number" id="visitorCount">--</span>
+          <span class="counter-unit">次</span>
+        </div>
       </div>
     </footer>
   </div>
